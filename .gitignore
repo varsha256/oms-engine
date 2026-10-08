@@ -1,0 +1,61 @@
+# ==========================================
+# 1. Environment Variables & Secrets
+# ==========================================
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# ==========================================
+# 2. Terraform / Infrastructure
+# ==========================================
+# Ignore local Terraform directories
+.terraform/
+
+# Ignore state files (CRITICAL: These contain cleartext secrets!)
+*.tfstate
+*.tfstate.*
+
+# Ignore variables files containing passwords/keys
+*.tfvars
+*.tfvars.json
+*.auto.tfvars
+
+# Ignore transient lock files and crash logs
+.terraform.tfstate.lock.info
+crash.log
+crash.*.log
+
+# ==========================================
+# 3. Next.js / Vercel
+# ==========================================
+# Next.js build output
+.next/
+out/
+build/
+
+# Vercel deployment folder
+.vercel/
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# ==========================================
+# 4. Node.js dependencies & Logs
+# ==========================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+
+# ==========================================
+# 5. OS & IDE Specific
+# ==========================================
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
