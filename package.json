@@ -1,0 +1,46 @@
+{
+  "name": "oms-engine",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "db:migrate": "npx prisma migrate dev",
+    "db:seed": "npx ts-node --compiler-options \"{\\\"module\\\":\\\"CommonJS\\\"}\" prisma/seed.ts",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "prisma skills sync || exit 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/varsha256/oms-engine.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/varsha256/oms-engine/issues"
+  },
+  "homepage": "https://github.com/varsha256/oms-engine#readme",
+  "dependencies": {
+    "dotenv": "^18.0.5",
+    "ioredis": "^6.0.0",
+    "json-rules-engine": "^7.3.1",
+    "kafkajs": "^2.2.4",
+    "next": "16.3.8",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "xstate": "^5.33.2"
+  },
+  "devDependencies": {
+    "@prisma/client": "^5.22.0",
+    "@types/node": "^26.6.4",
+    "@types/react": "19.3.0",
+    "prisma": "^5.22.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^7.0.2"
+  }
+}

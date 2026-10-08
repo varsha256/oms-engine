@@ -1,0 +1,70 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model TenantWorkflow {
+  id                 String   @id @default(uuid()) @db.Uuid
+  tenant_id          String   @db.Uuid
+  version            Int      @default(1)
+  is_active          Boolean  @default(true)
+  state_machine_config Json
+  rule_definitions   Json     @default("{}")
+  created_at         DateTime @default(now())
+  orders             Order[]
+
+  @@unique([tenant_id, version])
+  @@map("tenant_workflows")
+}
+
+model Order {
+  id                  String         @id @default(uuid()) @db.Uuid
+  tenant_id           String         @db.Uuid
+  workflow_version_id String         @db.Uuid
+  workflow_version    TenantWorkflow @relation(fields: [workflow_version_id], references: [id])
+  customer_id         String         @db.Uuid
+  current_state       String         @db.VarChar(100)
+  total_amount        Decimal        @db.Decimal(12, 2)
+  tax_amount          Decimal        @default(0.00) @db.Decimal(12, 2)
+  currency            String         @default("USD") @db.VarChar(3)
+  version             Int            @default(1)
+  created_at          DateTime       @default(now())
+
+  @@index([tenant_id, current_state])
+  @@map("orders")
+}
+
+model OutboxEvent {
+  id                String    @id @default(uuid()) @db.Uuid
+  tenant_id         String    @db.Uuid
+  aggregate_type    String    @default("ORDER") @db.VarChar(50)
+  aggregate_id      String    @db.Uuid
+  event_type        String    @db.VarChar(100)
+  payload           Json
+  processed         Boolean   @default(false)
+  retry_count       Int       @default(0)
+  error_log         String?
+  last_attempted_at DateTime?
+  created_at        DateTime  @default(now())
+
+  @@index([processed, retry_count, created_at])
+  @@map("outbox_events")
+}
+
+model OutboxEventsDLQ {
+  id             String   @id @db.Uuid
+  tenant_id      String   @db.Uuid
+  aggregate_type String   @db.VarChar(50)
+  aggregate_id   String   @db.Uuid
+  event_type     String   @db.VarChar(100)
+  payload        Json
+  failed_at      DateTime @default(now())
+  error_log      String?
+  retry_count    Int
+
+  @@map("outbox_events_dlq")
+}
