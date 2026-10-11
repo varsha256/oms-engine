@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QWeave - AI-Powered OMS Engine</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            blue: '#0f172a',    // slate-900
+                            dark: '#020617',    // slate-950
+                            panel: '#1e293b',   // slate-800
+                            border: '#334155',  // slate-700
+                            orange: '#f97316',  // orange-500
+                            orangeHover: '#ea580c', // orange-600
+                            accent: '#38bdf8',  // sky-400
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #020617; color: #cbd5e1; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .pattern-bg {
+            background-image: radial-gradient(#334155 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+    </style>
+</head>
+<body class="antialiased overflow-hidden h-screen w-screen selection:bg-brand-orange selection:text-white">
+
+    <!-- VIEW 1: SIGN IN PAGE -->
+    <div id="login-view" class="h-full w-full flex flex-col md:flex-row transition-opacity duration-500">
+        
+        <!-- Left Side: Branding -->
+        <div class="hidden md:flex flex-col justify-between w-1/2 bg-brand-blue relative overflow-hidden p-12 border-r border-brand-border">
+            <!-- Background effects -->
+            <div class="absolute inset-0 pattern-bg opacity-30"></div>
+            <div class="absolute top-0 left-0 w-96 h-96 bg-brand-orange/20 rounded-full mix-blend-screen filter blur-3xl opacity-50 -translate-x-1/2 -translate-y-1/2"></div>
+            <div class="absolute bottom-0 right-0 w-96 h-96 bg-brand-accent/20 rounded-full mix-blend-screen filter blur-3xl opacity-50 translate-x-1/4 translate-y-1/4"></div>
+            
+            <div class="relative z-10 flex items-center gap-3">
+                <svg viewBox="0 0 100 100" class="w-10 h-10 text-brand-orange" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="45" cy="45" r="35" class="text-brand-accent" stroke="currentColor"></circle>
+                    <path d="M70 70 L90 90" stroke="currentColor"></path>
+                    <path d="M20 70 Q 45 90 70 70" class="text-brand-orange" stroke="currentColor"></path>
+                </svg>
+                <span class="text-3xl font-bold text-white tracking-tight">QWeave</span>
+            </div>
+
+            <div class="relative z-10 max-w-md">
+                <h1 class="text-4xl font-bold text-white mb-6 leading-tight">The AI-first OMS Engine.</h1>
+                <p class="text-slate-400 text-lg mb-8">Seamlessly translate your business logic into production-ready JSON state machines. High-throughput order creation meets intelligent workflow execution.</p>
+                
+                <div class="glass-card p-6 rounded-xl border border-brand-border/50">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-10 h-10 rounded-full bg-brand-panel flex items-center justify-center border border-brand-border">
+                            <i data-lucide="shield-check" class="w-5 h-5 text-emerald-400"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-white font-medium">Enterprise Security</h4>
+                            <p class="text-sm text-slate-400">End-to-end encryption & QA verified</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="relative z-10 text-sm text-slate-500 font-medium">
+                &copy; 2026 QAStack. All rights reserved.
+            </div>
+        </div>
+
+        <!-- Right Side: Login Form -->
+        <div class="w-full md:w-1/2 bg-brand-dark flex items-center justify-center p-8 sm:p-12 relative">
+            <div class="w-full max-w-md space-y-8 relative z-10">
+                <div class="text-center md:text-left md:hidden mb-8 flex flex-col items-center">
+                     <svg viewBox="0 0 100 100" class="w-12 h-12 text-brand-orange mb-4" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="45" cy="45" r="35" class="text-brand-accent" stroke="currentColor"></circle>
+                        <path d="M70 70 L90 90" stroke="currentColor"></path>
+                        <path d="M20 70 Q 45 90 70 70" class="text-brand-orange" stroke="currentColor"></path>
+                    </svg>
+                    <h2 class="text-2xl font-bold text-white">QWeave</h2>
+                </div>
+                
+                <div class="text-center md:text-left">
+                    <h2 class="text-3xl font-bold text-white mb-2">Welcome back</h2>
+                    <p class="text-slate-400">Sign in to your OMS workspace.</p>
+                </div>
+
+                <form class="space-y-6" onsubmit="handleLogin(event)">
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-slate-300 mb-2">Email address</label>
+                        <input id="email" name="email" type="email" autocomplete="email" required 
+                            class="w-full px-4 py-3 bg-brand-panel border border-brand-border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-orange focus:border-transparent text-white placeholder-slate-500 transition-all" 
+                            placeholder="varsha@qastack.com">
+                    </div>
+
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <label for="password" class="block text-sm font-medium text-slate-300">Password</label>
+                            <a href="#" class="text-sm font-medium text-brand-orange hover:text-brand-orangeHover">Forgot password?</a>
+                        </div>
+                        <input id="password" name="password" type="password" autocomplete="current-password" required 
+                            class="w-full px-4 py-3 bg-brand-panel border border-brand-border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-orange focus:border-transparent text-white placeholder-slate-500 transition-all" 
+                            placeholder="••••••••">
+                    </div>
+
+                    <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white bg-brand-orange hover:bg-brand-orangeHover focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-brand-dark focus:ring-brand-orange transition-all">
+                        Sign In to Engine
+                    </button>
+                    
+                    <div class="mt-6">
+                        <div class="relative">
+                            <div class="absolute inset-0 flex items-center">
+                                <div class="w-full border-t border-brand-border"></div>
+                            </div>
+                            <div class="relative flex justify-center text-sm">
+                                <span class="px-2 bg-brand-dark text-slate-500">Or continue with</span>
+                            </div>
+                        </div>
+                        
+                        <button type="button" class="mt-6 w-full flex items-center justify-center gap-3 py-3 px-4 border border-brand-border rounded-lg text-sm font-medium text-slate-300 bg-brand-panel hover:bg-slate-700 transition-all">
+                            <svg class="w-5 h-5" viewBox="0 0 24 24">
+                                <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+                            </svg>
+                            Google
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIEW 2: POST-LOGIN DASHBOARD -->
+    <div id="dashboard-view" class="h-full w-full flex hidden bg-brand-dark transition-opacity duration-500 opacity-0">
+        
+        <!-- Sidebar -->
+        <aside class="w-64 bg-brand-blue border-r border-brand-border hidden md:flex flex-col h-full">
+            <div class="h-20 flex items-center px-6 border-b border-brand-border">
+                <svg viewBox="0 0 100 100" class="w-8 h-8 text-brand-orange mr-3" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="45" cy="45" r="35" class="text-brand-accent" stroke="currentColor"></circle>
+                    <path d="M70 70 L90 90" stroke="currentColor"></path>
+                    <path d="M20 70 Q 45 90 70 70" class="text-brand-orange" stroke="currentColor"></path>
+                </svg>
+                <span class="text-xl font-bold text-white tracking-tight">QWeave</span>
+            </div>
+            
+            <nav class="flex-1 overflow-y-auto py-6 px-4 space-y-1">
+                <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-brand-orange/10 text-brand-orange font-medium">
+                    <i data-lucide="layout-dashboard" class="w-5 h-5"></i> Dashboard
+                </a>
+                <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-brand-panel transition-colors font-medium">
+                    <i data-lucide="shopping-cart" class="w-5 h-5"></i> Live Orders
+                </a>
+                <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-brand-panel transition-colors font-medium">
+                    <i data-lucide="git-merge" class="w-5 h-5"></i> AI Workflows
+                </a>
+                <!-- Highlighted nav item for QA -->
+                <a href="#" class="flex items-center justify-between px-3 py-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-brand-panel transition-colors font-medium mt-4">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="shield-check" class="w-5 h-5 text-emerald-400"></i> 
+                        <span>QA Review Center</span>
+                    </div>
+                    <span class="bg-brand-orange text-white text-xs font-bold px-2 py-0.5 rounded-full">3</span>
+                </a>
+                <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-brand-panel transition-colors font-medium">
+                    <i data-lucide="receipt" class="w-5 h-5"></i> Invoices
+                </a>
+            </nav>
+
+            <div class="p-4 border-t border-brand-border">
+                <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-white hover:bg-brand-panel transition-colors font-medium">
+                    <i data-lucide="settings" class="w-5 h-5"></i> Settings
+                </a>
+                <a href="#" onclick="handleLogout(event)" class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-red-400 hover:bg-brand-panel transition-colors font-medium mt-1">
+                    <i data-lucide="log-out" class="w-5 h-5"></i> Sign Out
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 flex flex-col h-full overflow-hidden relative">
+            
+            <!-- Header -->
+            <header class="h-20 flex items-center justify-between px-6 border-b border-brand-border bg-brand-blue/50 backdrop-blur-md">
+                <div class="flex items-center flex-1">
+                    <button class="md:hidden mr-4 text-slate-400 hover:text-white">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                    <div class="relative w-full max-w-md hidden sm:block">
+                        <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500"></i>
+                        <input type="text" placeholder="Search orders, workflows, or states..." class="w-full pl-10 pr-4 py-2 bg-brand-panel border border-brand-border rounded-lg focus:outline-none focus:ring-1 focus:ring-brand-orange text-sm text-white placeholder-slate-500">
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-5">
+                    <button class="relative text-slate-400 hover:text-white transition-colors">
+                        <i data-lucide="bell" class="w-6 h-6"></i>
+                        <span class="absolute top-0 right-0 w-2.5 h-2.5 bg-brand-orange rounded-full border-2 border-brand-blue"></span>
+                    </button>
+                    <div class="h-8 w-px bg-brand-border mx-1"></div>
+                    <button class="flex items-center gap-3 focus:outline-none">
+                        <img src="https://ui-avatars.com/api/?name=Varsha+Yadav&background=f97316&color=fff&rounded=true" alt="Varsha Yadav" class="w-9 h-9 rounded-full border-2 border-brand-border hover:border-brand-orange transition-colors">
+                        <div class="text-left hidden sm:block">
+                            <p class="text-sm font-medium text-white leading-none">Varsha Yadav</p>
+                            <p class="text-xs text-slate-500 mt-1">Admin / QAStack</p>
+                        </div>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-500 hidden sm:block"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Scrollable Content -->
+            <div class="flex-1 overflow-y-auto p-6 md:p-8">
+                
+                <!-- Welcome Banner -->
+                <div class="mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-white mb-1">Welcome back, Varsha.</h2>
+                        <p class="text-slate-400">Here is your engine overview and live state machine status.</p>
+                    </div>
+                    <div class="flex gap-3">
+                        <button class="px-4 py-2 bg-brand-panel border border-brand-border rounded-lg text-sm font-medium text-white hover:bg-slate-700 transition-colors flex items-center gap-2">
+                            <i data-lucide="calendar" class="w-4 h-4"></i> Today
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-brand-panel border border-brand-border rounded-xl p-5 shadow-sm">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-2 bg-blue-500/10 rounded-lg text-blue-400"><i data-lucide="shopping-bag" class="w-5 h-5"></i></div>
+                            <span class="text-xs font-medium text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded-full">+12%</span>
+                        </div>
+                        <h3 class="text-3xl font-bold text-white mb-1">1,248</h3>
+                        <p class="text-sm text-slate-400">Total Orders (Today)</p>
+                    </div>
+                    
+                    <div class="bg-brand-panel border border-brand-border rounded-xl p-5 shadow-sm">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-2 bg-brand-accent/10 rounded-lg text-brand-accent"><i data-lucide="git-branch" class="w-5 h-5"></i></div>
+                        </div>
+                        <h3 class="text-3xl font-bold text-white mb-1">14</h3>
+                        <p class="text-sm text-slate-400">Active Tenant Workflows</p>
+                    </div>
+
+                    <!-- Highlighted QA Card -->
+                    <div class="bg-brand-panel border-2 border-brand-orange/50 rounded-xl p-5 shadow-[0_0_15px_rgba(249,115,22,0.15)] relative overflow-hidden group cursor-pointer hover:border-brand-orange transition-all">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-brand-orange/10 rounded-full blur-2xl group-hover:bg-brand-orange/20 transition-all"></div>
+                        <div class="flex justify-between items-start mb-4 relative z-10">
+                            <div class="p-2 bg-brand-orange/20 rounded-lg text-brand-orange"><i data-lucide="shield-alert" class="w-5 h-5"></i></div>
+                            <span class="flex h-3 w-3 relative">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-orange opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-3 w-3 bg-brand-orange"></span>
+                            </span>
+                        </div>
+                        <h3 class="text-3xl font-bold text-white mb-1 relative z-10">3</h3>
+                        <p class="text-sm text-brand-orange font-medium relative z-10">Pending QA Reviews</p>
+                    </div>
+
+                    <div class="bg-brand-panel border border-brand-border rounded-xl p-5 shadow-sm">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="p-2 bg-emerald-500/10 rounded-lg text-emerald-400"><i data-lucide="indian-rupee" class="w-5 h-5"></i></div>
+                            <span class="text-xs font-medium text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded-full">+8.4%</span>
+                        </div>
+                        <h3 class="text-3xl font-bold text-white mb-1">₹45,200</h3>
+                        <p class="text-sm text-slate-400">Today's Revenue</p>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <button class="bg-gradient-to-r from-brand-panel to-brand-blue border border-brand-border hover:border-brand-accent transition-colors rounded-xl p-6 text-left flex items-start gap-4 group">
+                        <div class="p-3 bg-brand-accent/10 rounded-lg text-brand-accent group-hover:scale-110 transition-transform">
+                            <i data-lucide="sparkles" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-white mb-1">Prompt New AI Workflow</h4>
+                            <p class="text-sm text-slate-400">Use natural language to generate a new JSON state machine for a tenant.</p>
+                        </div>
+                    </button>
+                    
+                    <button class="bg-gradient-to-r from-brand-panel to-brand-blue border border-brand-border hover:border-emerald-500/50 transition-colors rounded-xl p-6 text-left flex items-start gap-4 group">
+                        <div class="p-3 bg-emerald-500/10 rounded-lg text-emerald-400 group-hover:scale-110 transition-transform">
+                            <i data-lucide="check-square" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-lg font-bold text-white mb-1">Review Pending State Machines</h4>
+                            <p class="text-sm text-slate-400">Approve or modify AI-generated JSON workflows before production deployment.</p>
+                        </div>
+                    </button>
+                </div>
+
+                <!-- Recent Orders Table -->
+                <div class="bg-brand-panel border border-brand-border rounded-xl overflow-hidden">
+                    <div class="px-6 py-5 border-b border-brand-border flex justify-between items-center bg-brand-blue/50">
+                        <h3 class="text-lg font-bold text-white">Live Operations (Momo Shop Tenant)</h3>
+                        <button class="text-sm font-medium text-brand-accent hover:text-white transition-colors flex items-center gap-1">
+                            View All <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm text-slate-400">
+                            <thead class="text-xs uppercase bg-brand-blue/30 text-slate-500">
+                                <tr>
+                                    <th scope="col" class="px-6 py-4 font-medium">Order ID</th>
+                                    <th scope="col" class="px-6 py-4 font-medium">Customer</th>
+                                    <th scope="col" class="px-6 py-4 font-medium">Items</th>
+                                    <th scope="col" class="px-6 py-4 font-medium">Total</th>
+                                    <th scope="col" class="px-6 py-4 font-medium">State Machine Status</th>
+                                    <th scope="col" class="px-6 py-4 font-medium text-right">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-brand-border">
+                                <tr class="hover:bg-brand-blue/30 transition-colors">
+                                    <td class="px-6 py-4 font-mono text-white">#1001</td>
+                                    <td class="px-6 py-4 font-medium text-slate-300">Rahul Sharma</td>
+                                    <td class="px-6 py-4 truncate max-w-[200px]">2x Steam Chicken Momos, 1x Coke</td>
+                                    <td class="px-6 py-4">₹240</td>
+                                    <td class="px-6 py-4">
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-brand-orange/10 text-brand-orange border border-brand-orange/20">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-brand-orange"></span> Ready for Pickup
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <button class="text-slate-400 hover:text-white"><i data-lucide="more-horizontal" class="w-5 h-5"></i></button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-brand-blue/30 transition-colors">
+                                    <td class="px-6 py-4 font-mono text-white">#1002</td>
+                                    <td class="px-6 py-4 font-medium text-slate-300">Amit Patel</td>
+                                    <td class="px-6 py-4 truncate max-w-[200px]">1x Veg Pan Fried Momos</td>
+                                    <td class="px-6 py-4">₹120</td>
+                                    <td class="px-6 py-4">
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-brand-accent/10 text-brand-accent border border-brand-accent/20">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-brand-accent"></span> Order Placed
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <button class="text-slate-400 hover:text-white"><i data-lucide="more-horizontal" class="w-5 h-5"></i></button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-brand-blue/30 transition-colors">
+                                    <td class="px-6 py-4 font-mono text-white">#1000</td>
+                                    <td class="px-6 py-4 font-medium text-slate-300">Sneha Gupta</td>
+                                    <td class="px-6 py-4 truncate max-w-[200px]">3x Kurkure Momos, 2x Spring Rolls</td>
+                                    <td class="px-6 py-4">₹450</td>
+                                    <td class="px-6 py-4">
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Delivered
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <button class="text-slate-400 hover:text-white"><i data-lucide="more-horizontal" class="w-5 h-5"></i></button>
+                                    </td>
+                                </tr>
+                                <tr class="hover:bg-brand-blue/30 transition-colors opacity-60">
+                                    <td class="px-6 py-4 font-mono text-white">#0999</td>
+                                    <td class="px-6 py-4 font-medium text-slate-300">Vikram Singh</td>
+                                    <td class="px-6 py-4 truncate max-w-[200px]">1x Chicken Chilli Momos</td>
+                                    <td class="px-6 py-4">₹160</td>
+                                    <td class="px-6 py-4">
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-red-500/10 text-red-400 border border-red-500/20">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-red-400"></span> Canceled
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <button class="text-slate-400 hover:text-white"><i data-lucide="more-horizontal" class="w-5 h-5"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Footer within dashboard -->
+                <div class="mt-8 pt-6 border-t border-brand-border text-center sm:text-left text-sm text-slate-500 pb-4">
+                    QWeave Engine v1.0.4 • Connected to Supabase (Pooler) • Cache: Upstash Redis
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // View State Management
+        const loginView = document.getElementById('login-view');
+        const dashboardView = document.getElementById('dashboard-view');
+
+        function handleLogin(e) {
+            e.preventDefault(); // Prevent form submission reload
+            
+            // Fade out login view
+            loginView.classList.add('opacity-0');
+            
+            setTimeout(() => {
+                // Hide login, show dashboard
+                loginView.classList.add('hidden');
+                dashboardView.classList.remove('hidden');
+                
+                // Trigger reflow
+                void dashboardView.offsetWidth; 
+                
+                // Fade in dashboard
+                dashboardView.classList.remove('opacity-0');
+            }, 500);
+        }
+
+        function handleLogout(e) {
+            e.preventDefault();
+            
+            // Fade out dashboard
+            dashboardView.classList.add('opacity-0');
+            
+            setTimeout(() => {
+                // Hide dashboard, show login
+                dashboardView.classList.add('hidden');
+                loginView.classList.remove('hidden');
+                
+                // Trigger reflow
+                void loginView.offsetWidth; 
+                
+                // Fade in login
+                loginView.classList.remove('opacity-0');
+            }, 500);
+        }
+    </script>
+</body>
+</html>

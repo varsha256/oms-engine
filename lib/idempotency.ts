@@ -14,7 +14,7 @@ export async function saveIdempotentResponse(
   const payload = JSON.stringify({ status, body });
 
   try {
-    await redis.setex(cacheKey, IDEMPOTENCY_TTL_SECONDS, payload);
+    await redis.set(cacheKey, payload, { ex: IDEMPOTENCY_TTL_SECONDS });
   } catch (err) {
     console.error('Failed to store idempotency record in Redis:', err);
   }

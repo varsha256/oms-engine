@@ -1,13 +1,12 @@
 import { PrismaClient } from '@prisma/client';
-import Redis from 'ioredis';
 import { evaluateStateTransition } from '../lib/stateEngine';
+import { redis } from '../lib/redis';
 
 const prisma = new PrismaClient();
-const redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379');
 
 export async function transitionOrder(tenantId: string, orderId: string, event: string, payload: any) {
   const lockKey = `lock:order:${orderId}`;
-  const acquired = await redis.set(lockKey, 'LOCKED', 'PX', 5000, 'NX');
+  const acquired = await redis.set(lockKey, 'LOCKED', { px: 5000, nx: true });
 
   if (!acquired) {
     throw new Error('CONCURRENCY_ERROR: Order is currently being updated.');

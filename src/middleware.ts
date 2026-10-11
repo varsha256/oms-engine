@@ -1,12 +1,48 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { createServerClient } from '@supabase/ssr';
 import { redis } from '../lib/redis';
 
 // 24-hour expiration window for idempotency records
 const IDEMPOTENCY_TTL_SECONDS = 86400;
 
 export async function middleware(req: NextRequest) {
-  // Only execute middleware on API routes
   if (!req.nextUrl.pathname.startsWith('/api')) {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseKey =
+      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+    if (!supabaseUrl || !supabaseKey) {
+      return NextResponse.next({ request: req });
+    }
+
+    let response = NextResponse.next({ request: req });
+    const supabase = createServerClient(supabaseUrl, supabaseKey, {
+      cookies: {
+        getAll() {
+          return req.cookies.getAll();
+        },
+        setAll(cookiesToSet, headers) {
+          cookiesToSet.forEach(({ name, value }) => req.cookies.set(name, value));
+          response = NextResponse.next({ request: req });
+          cookiesToSet.forEach(({ name, value, options }) => {
+            response.cookies.set(name, value, options);
+          });
+          Object.entries(headers).forEach(([name, value]) => {
+            response.headers.set(name, value);
+          });
+        },
+      },
+    });
+
+    const { error } = await supabase.auth.getClaims();
+    if (error && error.name !== 'AuthSessionMissingError') {
+      throw error;
+    }
+    return response;
+  }
+
+  if (req.nextUrl.pathname === '/api/onboarding/tenant') {
     return NextResponse.next();
   }
 
@@ -32,7 +68,7 @@ export async function middleware(req: NextRequest) {
     const cacheKey = `idempotency:${tenantKey}:${idempotencyKey}`;
 
     try {
-      const cachedRecord = await redis.get(cacheKey);
+      const cachedRecord = await redis.get<string>(cacheKey);
 
       if (cachedRecord) {
         const parsed = JSON.parse(cachedRecord);
@@ -61,5 +97,5 @@ export async function middleware(req: NextRequest) {
 
 // Scope middleware specifically to application API routes
 export const config = {
-  matcher: '/api/:path*',
+  matcher: ['/', '/signin', '/dashboard/:path*', '/auth/:path*', '/api/:path*'],
 };

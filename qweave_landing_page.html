@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QWeave - AI-Powered OMS Engine</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            blue: '#0f172a',    // slate-900
+                            dark: '#020617',    // slate-950
+                            orange: '#f97316',  // orange-500
+                            orangeHover: '#ea580c', // orange-600
+                            accent: '#38bdf8',  // sky-400
+                        }
+                    },
+                    animation: {
+                        'blob': 'blob 7s infinite',
+                    },
+                    keyframes: {
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar for a polished look */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569; 
+        }
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .code-container {
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-brand-dark text-slate-300 font-sans antialiased overflow-x-hidden selection:bg-brand-orange selection:text-white">
+
+    <nav class="fixed w-full z-50 glass-panel border-b-0 border-slate-800 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer">
+                    <div class="relative w-8 h-8">
+                        <!-- Abstract Q Logo using SVG -->
+                        <svg viewBox="0 0 100 100" class="w-full h-full text-brand-orange" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="45" cy="45" r="35" class="text-brand-accent" stroke="currentColor"></circle>
+                            <path d="M70 70 L90 90" stroke="currentColor"></path>
+                            <path d="M20 70 Q 45 90 70 70" class="text-brand-orange" stroke="currentColor"></path>
+                        </svg>
+                    </div>
+                    <span class="text-2xl font-bold text-white tracking-tight">QWeave</span>
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#features" class="text-sm font-medium hover:text-white transition-colors">Features</a>
+                    <a href="#how-it-works" class="text-sm font-medium hover:text-white transition-colors">How it Works</a>
+                    <a href="#stack" class="text-sm font-medium hover:text-white transition-colors">Tech Stack</a>
+                    <div class="h-5 w-px bg-slate-700"></div>
+                    <a href="#" class="text-sm font-medium hover:text-white transition-colors">Sign In</a>
+                    <a href="#" class="inline-flex items-center justify-center px-5 py-2.5 border border-transparent text-sm font-medium rounded-lg text-white bg-brand-orange hover:bg-brand-orangeHover transition-all shadow-[0_0_15px_rgba(249,115,22,0.4)] hover:shadow-[0_0_25px_rgba(249,115,22,0.6)]">
+                        Get Started
+                    </a>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center">
+                    <button class="text-slate-300 hover:text-white focus:outline-none">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
+            <!-- Background Gradients -->
+            <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-full pointer-events-none">
+                <div class="absolute top-20 left-0 w-72 h-72 bg-brand-orange/20 rounded-full mix-blend-screen filter blur-3xl opacity-50 animate-blob"></div>
+                <div class="absolute top-20 right-0 w-72 h-72 bg-brand-accent/20 rounded-full mix-blend-screen filter blur-3xl opacity-50 animate-blob animation-delay-2000"></div>
+                <div class="absolute -bottom-8 left-20 w-72 h-72 bg-indigo-500/20 rounded-full mix-blend-screen filter blur-3xl opacity-50 animate-blob animation-delay-4000"></div>
+            </div>
+
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div class="text-center max-w-4xl mx-auto">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800/50 border border-slate-700 text-sm font-medium text-brand-accent mb-8">
+                        <span class="flex h-2 w-2 relative">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-accent opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-brand-accent"></span>
+                        </span>
+                        v1.0 is now live in early access
+                    </div>
+                    <h1 class="text-5xl md:text-7xl font-bold text-white tracking-tight mb-6 leading-tight">
+                        Weave Plain English into <br class="hidden lg:block"/>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-orange to-brand-accent">Powerful Workflows</span>
+                    </h1>
+                    <p class="text-lg md:text-xl text-slate-400 mb-10 max-w-3xl mx-auto">
+                        The AI-first OMS Engine that instantly translates your business logic into production-ready JSON state machines. Designed for quick commerce, QWeave goes beyond workflow generation—it is a complete end-to-end engine handling order creation, strict state transitions, and automated invoice generation.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                        <button class="w-full sm:w-auto px-8 py-4 rounded-lg bg-brand-orange text-white font-semibold text-lg hover:bg-brand-orangeHover transition-all shadow-[0_0_20px_rgba(249,115,22,0.3)] hover:shadow-[0_0_30px_rgba(249,115,22,0.5)] flex items-center justify-center gap-2">
+                            Start Building Free
+                            <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                        </button>
+                        <button class="w-full sm:w-auto px-8 py-4 rounded-lg bg-slate-800 text-white font-semibold text-lg hover:bg-slate-700 border border-slate-700 transition-all flex items-center justify-center gap-2">
+                            <i data-lucide="book-open" class="w-5 h-5"></i>
+                            Read the Docs
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Code / UI Mockup -->
+                <div class="mt-20 relative mx-auto max-w-5xl">
+                    <div class="rounded-xl bg-slate-900 border border-slate-800 code-container overflow-hidden grid grid-cols-1 lg:grid-cols-2">
+                        
+                        <!-- Left side: NLP Input -->
+                        <div class="p-6 border-b lg:border-b-0 lg:border-r border-slate-800 bg-slate-900/50">
+                            <div class="flex items-center gap-2 mb-4">
+                                <i data-lucide="sparkles" class="w-4 h-4 text-brand-orange"></i>
+                                <span class="text-sm font-semibold text-slate-300">Agentic Input</span>
+                            </div>
+                            <div class="bg-slate-950 p-4 rounded-lg border border-slate-800 h-64">
+                                <p class="text-slate-400 font-mono text-sm leading-relaxed">
+                                    <span class="text-brand-accent">&gt;</span> I am a Momo seller. I want to create an order management system.
+                                    <br><br>
+                                    <span class="text-brand-accent">&gt;</span> The status should be: order placed, ready for pickup, picked up, delivered, completed, and canceled.
+                                    <br><br>
+                                    <span class="text-brand-accent animate-pulse">_</span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Right side: JSON Output -->
+                        <div class="p-6 bg-[#0d1117]">
+                            <div class="flex items-center gap-2 mb-4 justify-between">
+                                <div class="flex items-center gap-2">
+                                    <i data-lucide="file-json" class="w-4 h-4 text-brand-accent"></i>
+                                    <span class="text-sm font-semibold text-slate-300">Tenant Workflow JSON</span>
+                                </div>
+                                <div class="flex gap-1.5">
+                                    <div class="w-3 h-3 rounded-full bg-slate-700"></div>
+                                    <div class="w-3 h-3 rounded-full bg-slate-700"></div>
+                                    <div class="w-3 h-3 rounded-full bg-slate-700"></div>
+                                </div>
+                            </div>
+                            <div class="h-64 overflow-y-auto">
+<pre class="text-xs sm:text-sm font-mono text-slate-300"><code><span class="text-pink-400">{</span>
+  <span class="text-sky-300">"tenant"</span><span class="text-slate-400">:</span> <span class="text-green-300">"momo-shop"</span>,
+  <span class="text-sky-300">"workflow"</span><span class="text-slate-400">:</span> <span class="text-pink-400">{</span>
+    <span class="text-sky-300">"initial_state"</span><span class="text-slate-400">:</span> <span class="text-green-300">"ORDER_PLACED"</span>,
+    <span class="text-sky-300">"states"</span><span class="text-slate-400">:</span> <span class="text-yellow-300">[</span>
+      <span class="text-green-300">"ORDER_PLACED"</span>,
+      <span class="text-green-300">"READY_FOR_PICKUP"</span>,
+      <span class="text-green-300">"PICKED_UP"</span>,
+      <span class="text-green-300">"DELIVERED"</span>,
+      <span class="text-green-300">"COMPLETED"</span>,
+      <span class="text-green-300">"CANCELED"</span>
+    <span class="text-yellow-300">]</span>,
+    <span class="text-sky-300">"transitions"</span><span class="text-slate-400">:</span> <span class="text-yellow-300">[</span>
+      <span class="text-pink-400">{</span> <span class="text-sky-300">"from"</span><span class="text-slate-400">:</span> <span class="text-green-300">"ORDER_PLACED"</span>, <span class="text-sky-300">"to"</span><span class="text-slate-400">:</span> <span class="text-green-300">"READY_FOR_PICKUP"</span> <span class="text-pink-400">}</span>,
+      <span class="text-slate-500">/* ... generated logic ... */</span>
+    <span class="text-yellow-300">]</span>
+  <span class="text-pink-400">}</span>
+<span class="text-pink-400">}</span></code></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="py-24 bg-brand-dark border-t border-slate-800">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-brand-orange font-semibold tracking-wide uppercase text-sm mb-2">Core Capabilities</h2>
+                    <h3 class="text-3xl md:text-4xl font-bold text-white">Beyond Just Workflows</h3>
+                    <p class="mt-4 text-slate-400 max-w-2xl mx-auto">QWeave is a comprehensive execution engine that takes over your entire backend operations for quick commerce.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 hover:border-brand-orange transition-colors group">
+                        <div class="w-12 h-12 rounded-lg bg-slate-800 flex items-center justify-center mb-4 group-hover:bg-brand-orange/20 transition-colors">
+                            <i data-lucide="bot" class="w-6 h-6 text-brand-orange"></i>
+                        </div>
+                        <h4 class="text-lg font-bold text-white mb-2">Agentic AI Layer</h4>
+                        <p class="text-sm text-slate-400">Translates plain English requirements into strict, structured JSON workflows ready for production execution.</p>
+                    </div>
+                    
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 hover:border-brand-accent transition-colors group">
+                        <div class="w-12 h-12 rounded-lg bg-slate-800 flex items-center justify-center mb-4 group-hover:bg-brand-accent/20 transition-colors">
+                            <i data-lucide="shopping-cart" class="w-6 h-6 text-brand-accent"></i>
+                        </div>
+                        <h4 class="text-lg font-bold text-white mb-2">Order Creation</h4>
+                        <p class="text-sm text-slate-400">High-throughput ingestion endpoints designed to handle massive concurrency for flash sales and daily peaks.</p>
+                    </div>
+                    
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 hover:border-emerald-400 transition-colors group">
+                        <div class="w-12 h-12 rounded-lg bg-slate-800 flex items-center justify-center mb-4 group-hover:bg-emerald-400/20 transition-colors">
+                            <i data-lucide="git-commit" class="w-6 h-6 text-emerald-400"></i>
+                        </div>
+                        <h4 class="text-lg font-bold text-white mb-2">Strict State Machine</h4>
+                        <p class="text-sm text-slate-400">Enforces deterministic state transitions, prevents illegal steps, and provides a full audit trail of order events.</p>
+                    </div>
+                    
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 hover:border-indigo-400 transition-colors group">
+                        <div class="w-12 h-12 rounded-lg bg-slate-800 flex items-center justify-center mb-4 group-hover:bg-indigo-400/20 transition-colors">
+                            <i data-lucide="receipt" class="w-6 h-6 text-indigo-400"></i>
+                        </div>
+                        <h4 class="text-lg font-bold text-white mb-2">Automated Invoicing</h4>
+                        <p class="text-sm text-slate-400">Dynamically generates, stores, and sends accurate invoices to customers based on the finalized state of the order.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="how-it-works" class="py-24 bg-slate-900 border-t border-slate-800">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-brand-orange font-semibold tracking-wide uppercase text-sm mb-2">Workflow Architecture</h2>
+                    <h3 class="text-3xl md:text-4xl font-bold text-white">How QWeave Works</h3>
+                    <p class="mt-4 text-slate-400 max-w-2xl mx-auto">From idea to execution in seconds. Our engine bridges the gap between natural language and strict state machines.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8 relative">
+                    <!-- Connecting Line (Desktop) -->
+                    <div class="hidden md:block absolute top-12 left-[10%] right-[10%] h-0.5 bg-gradient-to-r from-transparent via-slate-700 to-transparent z-0"></div>
+
+                    <!-- Step 1 -->
+                    <div class="relative z-10 flex flex-col items-center text-center group">
+                        <div class="w-24 h-24 rounded-2xl bg-slate-800 border-2 border-slate-700 flex items-center justify-center mb-6 group-hover:border-brand-accent transition-colors shadow-lg">
+                            <i data-lucide="message-square" class="w-10 h-10 text-brand-accent"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-white mb-3">1. Type Plain English</h4>
+                        <p class="text-slate-400 text-sm leading-relaxed">
+                            Describe your business logic naturally. Tell the agent your required states, roles, and allowed transitions.
+                        </p>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="relative z-10 flex flex-col items-center text-center group">
+                        <div class="w-24 h-24 rounded-2xl bg-slate-800 border-2 border-slate-700 flex items-center justify-center mb-6 group-hover:border-brand-orange transition-colors shadow-lg">
+                            <i data-lucide="cpu" class="w-10 h-10 text-brand-orange"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-white mb-3">2. AI Generates JSON</h4>
+                        <p class="text-slate-400 text-sm leading-relaxed">
+                            Our LLM agentic layer strictly parses your request, validates constraints, and outputs a structured tenant workflow JSON.
+                        </p>
+                    </div>
+
+                    <!-- Step 3: QA & Safety -->
+                    <div class="relative z-10 flex flex-col items-center text-center group">
+                        <div class="w-24 h-24 rounded-2xl bg-slate-800 border-2 border-slate-700 flex items-center justify-center mb-6 group-hover:border-emerald-400 transition-colors shadow-lg">
+                            <i data-lucide="shield-check" class="w-10 h-10 text-emerald-400"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-white mb-3">3. Core Quality Review</h4>
+                        <p class="text-slate-400 text-sm leading-relaxed">
+                            We don't blindly execute AI output. Every JSON undergoes rigorous analysis and safety checks by QA experts with 20+ years of experience, ensuring absolute reliability and merchant trust.
+                        </p>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="relative z-10 flex flex-col items-center text-center group">
+                        <div class="w-24 h-24 rounded-2xl bg-slate-800 border-2 border-slate-700 flex items-center justify-center mb-6 group-hover:border-indigo-400 transition-colors shadow-lg">
+                            <i data-lucide="git-merge" class="w-10 h-10 text-indigo-400"></i>
+                        </div>
+                        <h4 class="text-xl font-bold text-white mb-3">4. Production Execution</h4>
+                        <p class="text-slate-400 text-sm leading-relaxed">
+                            Once verified, the OMS engine handles complete order creation, enforces strict state transitions, and automates invoice generation instantly.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="stack" class="py-24 bg-brand-dark">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h3 class="text-2xl md:text-3xl font-bold text-white">Built on a Modern, Event-Driven Stack</h3>
+                    <p class="mt-4 text-slate-400">Designed for zero-downtime, high-concurrency quick commerce environments.</p>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <!-- Vercel -->
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 flex flex-col items-center justify-center text-center hover:bg-slate-800 transition-colors">
+                        <svg viewBox="0 0 116 100" fill="white" class="w-12 h-12 mb-4"><path fill-rule="evenodd" clip-rule="evenodd" d="M57.5 0L115 100H0L57.5 0z"/></svg>
+                        <h4 class="font-semibold text-white">Vercel</h4>
+                        <p class="text-xs text-slate-500 mt-1">Serverless Execution</p>
+                    </div>
+                    
+                    <!-- Supabase -->
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 flex flex-col items-center justify-center text-center hover:bg-slate-800 transition-colors">
+                        <div class="w-12 h-12 rounded-full bg-[#3ECF8E]/10 flex items-center justify-center mb-4 text-[#3ECF8E]">
+                            <i data-lucide="database" class="w-6 h-6"></i>
+                        </div>
+                        <h4 class="font-semibold text-white">Supabase</h4>
+                        <p class="text-xs text-slate-500 mt-1">Postgres Database</p>
+                    </div>
+
+                    <!-- Redis -->
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 flex flex-col items-center justify-center text-center hover:bg-slate-800 transition-colors">
+                        <div class="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center mb-4 text-red-500">
+                            <i data-lucide="zap" class="w-6 h-6"></i>
+                        </div>
+                        <h4 class="font-semibold text-white">Upstash Redis</h4>
+                        <p class="text-xs text-slate-500 mt-1">Caching & Speed</p>
+                    </div>
+
+                    <!-- Kafka -->
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-6 flex flex-col items-center justify-center text-center hover:bg-slate-800 transition-colors">
+                        <div class="w-12 h-12 rounded-full bg-indigo-500/10 flex items-center justify-center mb-4 text-indigo-400">
+                            <i data-lucide="radio-receiver" class="w-6 h-6"></i>
+                        </div>
+                        <h4 class="font-semibold text-white">Aiven Kafka</h4>
+                        <p class="text-xs text-slate-500 mt-1">Event Streaming</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-20 relative overflow-hidden border-t border-slate-800 bg-slate-900">
+            <div class="absolute inset-0 bg-brand-orange/5"></div>
+            <div class="max-w-4xl mx-auto px-4 relative z-10 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">Ready to weave your logic into reality?</h2>
+                <p class="text-slate-400 mb-8 text-lg">Stop hardcoding state machines. Let QWeave handle the infrastructure while you focus on business logic.</p>
+                <button class="px-8 py-4 rounded-lg bg-white text-slate-900 font-bold text-lg hover:bg-gray-100 transition-all shadow-lg flex items-center justify-center gap-2 mx-auto">
+                    Create your first workflow
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-brand-dark py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-2">
+                <svg viewBox="0 0 100 100" class="w-6 h-6 text-brand-orange" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="45" cy="45" r="35" class="text-brand-accent" stroke="currentColor"></circle>
+                    <path d="M70 70 L90 90" stroke="currentColor"></path>
+                    <path d="M20 70 Q 45 90 70 70" class="text-brand-orange" stroke="currentColor"></path>
+                </svg>
+                <span class="text-lg font-bold text-white">QWeave</span>
+                <span class="text-sm text-slate-500 ml-2">by QAStack</span>
+            </div>
+            <div class="flex gap-6 text-sm text-slate-400">
+                <a href="#" class="hover:text-white transition-colors">Documentation</a>
+                <a href="#" class="hover:text-white transition-colors">API Reference</a>
+                <a href="#" class="hover:text-white transition-colors">Privacy</a>
+            </div>
+            <div class="text-slate-500 text-sm">
+                &copy; 2026 QWeave. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+    </script>
+</body>
+</html>

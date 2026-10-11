@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import Redis from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379');
+import { redis } from '../lib/redis';
 
 export async function handleApiMiddleware(req: NextRequest) {
   const tenantKey = req.headers.get('X-Tenant-Key');
@@ -12,7 +10,7 @@ export async function handleApiMiddleware(req: NextRequest) {
   const idempotencyKey = req.headers.get('Idempotency-Key');
   if (idempotencyKey && req.method === 'POST') {
     const cacheKey = `idempotency:${tenantKey}:${idempotencyKey}`;
-    const cachedResponse = await redis.get(cacheKey);
+    const cachedResponse = await redis.get<string>(cacheKey);
 
     if (cachedResponse) {
       const parsed = JSON.parse(cachedResponse);

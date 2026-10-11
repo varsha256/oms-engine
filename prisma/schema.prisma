@@ -1,12 +1,13 @@
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
 
 generator client {
   provider = "prisma-client-js"
 }
 
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
 model TenantWorkflow {
   id                 String   @id @default(uuid()) @db.Uuid
   tenant_id          String   @db.Uuid
@@ -67,4 +68,24 @@ model OutboxEventsDLQ {
   retry_count    Int
 
   @@map("outbox_events_dlq")
+}
+
+model Tenant {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  companyName String   @map("company_name") @db.VarChar(160)
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamp(3)
+  memberships TenantMembership[]
+
+  @@map("tenants")
+}
+
+model TenantMembership {
+  authUserId String   @id @map("auth_user_id") @db.Uuid
+  tenantId   String   @map("tenant_id") @db.Uuid
+  role       String   @default("owner") @db.VarChar(20)
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamp(3)
+  tenant     Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId])
+  @@map("tenant_memberships")
 }
